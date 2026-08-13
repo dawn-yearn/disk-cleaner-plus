@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>disk-cleaner-plus · C盘深度审查报告（脱敏示例）</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Microsoft YaHei',-apple-system,sans-serif;background:#f5f6fa;color:#2c3e50;padding:24px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-size:26px;margin-bottom:4px}
+.sub{color:#7f8c8d;font-size:13px;margin-bottom:20px}
+.cards{display:flex;gap:14px;flex-wrap:wrap;margin:20px 0}
+.card{flex:1;min-width:160px;background:#fff;border-radius:10px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.cv{font-size:24px;font-weight:700;color:#2c3e50}
+.cv.red{color:#e23d3d}.cv.grn{color:#27ae60}.cv.org{color:#e8733a}
+.cl{font-size:12px;color:#7f8c8d;margin-top:4px}
+.sec{background:#fff;border-radius:10px;padding:20px;margin:16px 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.sec h2{font-size:17px;margin-bottom:12px;border-left:4px solid #4a7bd3;padding-left:10px}
+.note{font-size:12px;color:#95a5a6;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:#7f8c8d;font-weight:600;padding:6px 8px;border-bottom:2px solid #ecf0f1;font-size:12px}
+td{padding:6px 8px;border-bottom:1px solid #f4f6f8;vertical-align:middle}
+td.nm{max-width:320px;word-break:break-all}
+td.nm2{max-width:360px;word-break:break-all;color:#7f8c8d;font-size:12px}
+td.sz{white-space:nowrap;font-weight:600}
+td.dt{white-space:nowrap;color:#95a5a6;font-size:12px}
+.bar{width:22%;position:relative}
+.barin{height:14px;border-radius:7px;min-width:2px}
+.alist{padding-left:20px;margin:4px 0}
+.alist li{margin:6px 0;font-size:14px}
+.verdict{background:#fff8e6;border:1px solid #f0d98c;border-radius:10px;padding:18px;margin:16px 0}
+.verdict h2{font-size:17px;color:#8a6d1a;margin-bottom:8px}
+.verdict p{font-size:14px}
+.tag{display:inline-block;background:#eef3fd;color:#4a7bd3;border-radius:4px;padding:1px 8px;font-size:12px;margin-right:6px}
+.footer{text-align:center;color:#bdc3c7;font-size:12px;margin:24px 0}
+</style></head><body><div class="wrap">
+<h1>🖥 disk-cleaner-plus · C盘深度审查报告（脱敏示例）</h1>
+<div class="sub">扫描时间：Demo | 只读审查（未删除任何文件） | 扫描深度：目录下钻至 2~3 级</div>
+
+<div class="cards">
+  <div class="card"><div class="cv">366.3 GB</div><div class="cl">C盘总容量</div></div>
+  <div class="card"><div class="cv red">323.2 GB</div><div class="cl">已使用（88%）</div></div>
+  <div class="card"><div class="cv grn">43.1 GB</div><div class="cl">当前剩余</div></div>
+  <div class="card"><div class="cv org">~35.7 GB</div><div class="cl">pagefile+hiberfil</div></div>
+</div>
+
+<div class="verdict">
+<h2>📌 核心结论</h2>
+<p>C盘共 <b>366.3 GB</b>，已用 <b>323.2 GB</b>（88%），剩余 <b>43.1 GB</b>。
+空间大头依次为：<b>用户数据 140.7GB</b>（其中 AppData 68.4GB + 桌面 35.8GB + conda 18.8GB）、
+<b>Windows 系统 61GB</b>、<b>Program Files 44GB</b>、<b>pagefile+hiberfil 35.7GB</b>。
+上午剩 40GB 到现在 38GB 的波动，主要是 <b>.codex 的日志库（logs_2.sqlite 0.31GB 今日持续写入）</b>和
+<b>WorkBuddy sandbox 日志（今日已生成 6 个 10MB 日志）</b>在增长所致，但 AI agent 相关总计约 <b>10GB</b>，并非 C 盘膨胀的主因——真正的大头是系统文件、Adobe 全家桶和个人桌面资料。</p>
+</div>
+
+<div class="sec"><h2>① C盘一级目录全景</h2><p class="note">未列出 0.5GB 以下目录；pagefile/hiberfil 等特殊文件单列</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">C:\Users</td><td class="sz">140.70 GB</td>
+    <td class="bar"><div class="barin" style="width:100%;background:#e23d3d"></div></td></tr><tr><td class="nm">C:\Windows</td><td class="sz">61.05 GB</td>
+    <td class="bar"><div class="barin" style="width:100%;background:#e23d3d"></div></td></tr><tr><td class="nm">C:\Program Files</td><td class="sz">44.03 GB</td>
+    <td class="bar"><div class="barin" style="width:100%;background:#e23d3d"></div></td></tr><tr><td class="nm">C:\ProgramData</td><td class="sz">11.54 GB</td>
+    <td class="bar"><div class="barin" style="width:38%;background:#e23d3d"></div></td></tr><tr><td class="nm">C:\Program Files (x86)</td><td class="sz">9.82 GB</td>
+    <td class="bar"><div class="barin" style="width:33%;background:#e8733a"></div></td></tr><tr><td class="nm">C:\adobeTemp</td><td class="sz">2.22 GB</td>
+    <td class="bar"><div class="barin" style="width:7%;background:#d9a514"></div></td></tr><tr><td class="nm">C:\$Recycle.Bin</td><td class="sz">1.34 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">C:\Autodesk</td><td class="sz">0.08 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr><tr><td class="nm">C:\Simpletex</td><td class="sz">0.08 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>② 系统特殊文件（约 35.7 GB）</h2><p class="note">pagefile 是虚拟内存，可改小但别删；hiberfil 可用 powercfg /h off 关闭休眠释放约 6GB</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">pagefile.sys</td><td class="sz">29.56 GB</td>
+    <td class="bar"><div class="barin" style="width:99%;background:#e23d3d"></div></td></tr><tr><td class="nm">hiberfil.sys</td><td class="sz">6.09 GB</td>
+    <td class="bar"><div class="barin" style="width:20%;background:#e8733a"></div></td></tr><tr><td class="nm">swapfile.sys</td><td class="sz">0.02 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>③ 用户目录 Users\User（140.7 GB）</h2><p class="note">AppData 68.4GB 最大 → 见下面④⑤；桌面 35.8GB → 见⑥；miniconda3 18.8GB → 见⑦</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">~\AppData</td><td class="sz">68.36 GB</td>
+    <td class="bar"><div class="barin" style="width:100%;background:#e23d3d"></div></td></tr><tr><td class="nm">~\Desktop</td><td class="sz">35.77 GB</td>
+    <td class="bar"><div class="barin" style="width:100%;background:#e23d3d"></div></td></tr><tr><td class="nm">~\miniconda3</td><td class="sz">18.80 GB</td>
+    <td class="bar"><div class="barin" style="width:63%;background:#e23d3d"></div></td></tr><tr><td class="nm">~\Downloads</td><td class="sz">4.54 GB</td>
+    <td class="bar"><div class="barin" style="width:15%;background:#e8733a"></div></td></tr><tr><td class="nm">~\.workbuddy</td><td class="sz">2.45 GB</td>
+    <td class="bar"><div class="barin" style="width:8%;background:#d9a514"></div></td></tr><tr><td class="nm">~\.vscode</td><td class="sz">1.65 GB</td>
+    <td class="bar"><div class="barin" style="width:6%;background:#d9a514"></div></td></tr><tr><td class="nm">~\.codex</td><td class="sz">1.63 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">~\Pictures</td><td class="sz">1.60 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">~\.cache</td><td class="sz">1.30 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">~\WPSDrive</td><td class="sz">1.20 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">~\.qq-chat-exporter</td><td class="sz">0.90 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">~\Documents</td><td class="sz">0.67 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">~\source</td><td class="sz">0.62 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">~\CrossDevice</td><td class="sz">0.60 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">~\.kimi-work</td><td class="sz">0.14 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr><tr><td class="nm">~\Clash Verge</td><td class="sz">0.13 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr><tr><td class="nm">~\.local</td><td class="sz">0.06 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>④ AppData\Local 内部（36.9 GB）</h2><p class="note">仅列 0.2GB 以上：Programs(Ollama等) 6.96、Edge 2.87、网易云 3.55、Chrome 3.54、MATLAB 2.42</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">Local\Programs</td><td class="sz">6.96 GB</td>
+    <td class="bar"><div class="barin" style="width:23%;background:#e8733a"></div></td></tr><tr><td class="nm">Local\Microsoft</td><td class="sz">4.60 GB</td>
+    <td class="bar"><div class="barin" style="width:15%;background:#e8733a"></div></td></tr><tr><td class="nm">Local\NetEase</td><td class="sz">3.55 GB</td>
+    <td class="bar"><div class="barin" style="width:12%;background:#e8733a"></div></td></tr><tr><td class="nm">Local\Google</td><td class="sz">3.54 GB</td>
+    <td class="bar"><div class="barin" style="width:12%;background:#e8733a"></div></td></tr><tr><td class="nm">Local\MathWorks</td><td class="sz">2.42 GB</td>
+    <td class="bar"><div class="barin" style="width:8%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\Packages</td><td class="sz">2.29 GB</td>
+    <td class="bar"><div class="barin" style="width:8%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\GitHubDesktop</td><td class="sz">1.51 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\Ollama</td><td class="sz">1.46 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\Doubao</td><td class="sz">0.96 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\Temp</td><td class="sz">0.84 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\kimi-desktop-updater</td><td class="sz">0.84 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\Autodesk</td><td class="sz">0.65 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\OpenAI</td><td class="sz">0.55 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\uv</td><td class="sz">0.54 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\DingTalk_133</td><td class="sz">0.54 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\Steam</td><td class="sz">0.51 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\com.tencent.yuanbao</td><td class="sz">0.51 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\jxedt-updater</td><td class="sz">0.45 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\sogoupdf</td><td class="sz">0.43 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\ms-playwright</td><td class="sz">0.41 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\@genieworkbuddy-desktop-updater</td><td class="sz">0.39 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\Adobe</td><td class="sz">0.38 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\javasharedresources</td><td class="sz">0.29 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Local\npm-cache</td><td class="sz">0.27 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑤ AppData\Roaming 内部（30.9 GB）</h2><p class="note">SeerLauncher 游戏 7.3GB、微信 4.4GB、WPS 4.7GB 是主要聊天/游戏/办公缓存</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">Roaming\SeerLauncher</td><td class="sz">7.32 GB</td>
+    <td class="bar"><div class="barin" style="width:24%;background:#e8733a"></div></td></tr><tr><td class="nm">Roaming\Tencent</td><td class="sz">5.07 GB</td>
+    <td class="bar"><div class="barin" style="width:17%;background:#e8733a"></div></td></tr><tr><td class="nm">Roaming\kingsoft</td><td class="sz">5.02 GB</td>
+    <td class="bar"><div class="barin" style="width:17%;background:#e8733a"></div></td></tr><tr><td class="nm">Roaming\Code</td><td class="sz">1.59 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\QQ</td><td class="sz">1.49 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\Adobe</td><td class="sz">1.35 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\QQEX</td><td class="sz">1.32 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\douyin</td><td class="sz">1.11 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\kimi-desktop</td><td class="sz">1.05 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\DingTalk</td><td class="sz">0.56 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\O+Connect</td><td class="sz">0.52 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\Tianfu Software</td><td class="sz">0.45 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\baidunetdisk</td><td class="sz">0.44 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\Foxit Software</td><td class="sz">0.37 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\GreenCore7z</td><td class="sz">0.31 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\greencore</td><td class="sz">0.31 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\com.adobe.dunamis</td><td class="sz">0.29 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\mihomo-party</td><td class="sz">0.27 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\SimpleTex MS-Word-WPS Plugin</td><td class="sz">0.27 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\Sangfor</td><td class="sz">0.26 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Roaming\NVIDIA</td><td class="sz">0.26 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑥ 桌面 Desktop（35.8 GB）</h2><p class="note">Projects\按时间 23.18GB 为最大单项，属个人资料</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">桌面\Projects</td><td class="sz">23.83 GB</td>
+    <td class="bar"><div class="barin" style="width:79%;background:#e23d3d"></div></td></tr><tr><td class="nm">桌面\Courses</td><td class="sz">4.37 GB</td>
+    <td class="bar"><div class="barin" style="width:15%;background:#e8733a"></div></td></tr><tr><td class="nm">桌面\Media</td><td class="sz">1.66 GB</td>
+    <td class="bar"><div class="barin" style="width:6%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Music</td><td class="sz">1.64 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Personal</td><td class="sz">0.89 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Archive</td><td class="sz">0.64 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\PPT模板</td><td class="sz">0.53 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Music Album A</td><td class="sz">0.48 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Notes</td><td class="sz">0.26 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Programming Book</td><td class="sz">0.25 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Music Album B</td><td class="sz">0.24 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\CET-6</td><td class="sz">0.24 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\安装包</td><td class="sz">0.19 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">桌面\Documents</td><td class="sz">0.14 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑦ Python 环境 miniconda3（18.8 GB）</h2><p class="note">envs 三个环境 13.8GB；pkgs 包缓存 1.95GB 可用 conda clean -a 清理</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">envs\pinn_env</td><td class="sz">6.58 GB</td>
+    <td class="bar"><div class="barin" style="width:22%;background:#e8733a"></div></td></tr><tr><td class="nm">envs\pinn_torch</td><td class="sz">5.52 GB</td>
+    <td class="bar"><div class="barin" style="width:18%;background:#e8733a"></div></td></tr><tr><td class="nm">envs\pinn</td><td class="sz">1.71 GB</td>
+    <td class="bar"><div class="barin" style="width:6%;background:#d9a514"></div></td></tr><tr><td class="nm">miniconda3\Lib</td><td class="sz">2.18 GB</td>
+    <td class="bar"><div class="barin" style="width:7%;background:#d9a514"></div></td></tr><tr><td class="nm">miniconda3\pkgs</td><td class="sz">1.95 GB</td>
+    <td class="bar"><div class="barin" style="width:6%;background:#d9a514"></div></td></tr><tr><td class="nm">miniconda3\Library</td><td class="sz">0.23 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑧ Windows 系统内部（61 GB）</h2><p class="note">WinSxS 28.7GB 为系统组件库，请勿手动删除</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">WinSxS</td><td class="sz">28.69 GB</td>
+    <td class="bar"><div class="barin" style="width:96%;background:#e23d3d"></div></td></tr><tr><td class="nm">System32</td><td class="sz">11.49 GB</td>
+    <td class="bar"><div class="barin" style="width:38%;background:#e23d3d"></div></td></tr><tr><td class="nm">Installer</td><td class="sz">7.99 GB</td>
+    <td class="bar"><div class="barin" style="width:27%;background:#e8733a"></div></td></tr><tr><td class="nm">assembly</td><td class="sz">4.03 GB</td>
+    <td class="bar"><div class="barin" style="width:13%;background:#e8733a"></div></td></tr><tr><td class="nm">Panther</td><td class="sz">1.97 GB</td>
+    <td class="bar"><div class="barin" style="width:7%;background:#d9a514"></div></td></tr><tr><td class="nm">SysWOW64</td><td class="sz">1.39 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">SystemApps</td><td class="sz">1.28 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">Logs</td><td class="sz">0.68 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Fonts</td><td class="sz">0.63 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Microsoft.NET</td><td class="sz">0.60 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">servicing</td><td class="sz">0.48 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">ASUS</td><td class="sz">0.42 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">SoftwareDistribution</td><td class="sz">0.31 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">SystemResources</td><td class="sz">0.21 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑨ Program Files 内部（44 GB）</h2>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">Adobe</td><td class="sz">25.24 GB</td>
+    <td class="bar"><div class="barin" style="width:84%;background:#e23d3d"></div></td></tr><tr><td class="nm">Common Files</td><td class="sz">7.59 GB</td>
+    <td class="bar"><div class="barin" style="width:25%;background:#e8733a"></div></td></tr><tr><td class="nm">Microsoft Office</td><td class="sz">3.04 GB</td>
+    <td class="bar"><div class="barin" style="width:10%;background:#e8733a"></div></td></tr><tr><td class="nm">Tencent</td><td class="sz">2.08 GB</td>
+    <td class="bar"><div class="barin" style="width:7%;background:#d9a514"></div></td></tr><tr><td class="nm">dotnet</td><td class="sz">1.38 GB</td>
+    <td class="bar"><div class="barin" style="width:5%;background:#d9a514"></div></td></tr><tr><td class="nm">Maxon Cinema 4D 2025</td><td class="sz">0.92 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">NVIDIA Corporation</td><td class="sz">0.70 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Oppo Connect</td><td class="sz">0.67 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Microsoft OneDrive</td><td class="sz">0.62 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Microsoft SQL Server</td><td class="sz">0.53 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Google</td><td class="sz">0.49 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">ASUS</td><td class="sz">0.31 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑩ Adobe 全家桶明细（25.2 GB）</h2><p class="note">PS/PR/AE/LR/ME/AI/Acrobat 七个大件</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">Adobe Photoshop 2025</td><td class="sz">4.01 GB</td>
+    <td class="bar"><div class="barin" style="width:13%;background:#e8733a"></div></td></tr><tr><td class="nm">Adobe Premiere Pro 2025</td><td class="sz">4.00 GB</td>
+    <td class="bar"><div class="barin" style="width:13%;background:#e8733a"></div></td></tr><tr><td class="nm">Adobe After Effects 2025</td><td class="sz">3.82 GB</td>
+    <td class="bar"><div class="barin" style="width:13%;background:#e8733a"></div></td></tr><tr><td class="nm">Adobe Lightroom Classic</td><td class="sz">3.40 GB</td>
+    <td class="bar"><div class="barin" style="width:11%;background:#e8733a"></div></td></tr><tr><td class="nm">Adobe Media Encoder 2025</td><td class="sz">3.34 GB</td>
+    <td class="bar"><div class="barin" style="width:11%;background:#e8733a"></div></td></tr><tr><td class="nm">Adobe Illustrator 2025</td><td class="sz">3.18 GB</td>
+    <td class="bar"><div class="barin" style="width:11%;background:#e8733a"></div></td></tr><tr><td class="nm">Acrobat DC</td><td class="sz">1.96 GB</td>
+    <td class="bar"><div class="barin" style="width:7%;background:#d9a514"></div></td></tr><tr><td class="nm">Adobe UXP Developer Tools</td><td class="sz">1.15 GB</td>
+    <td class="bar"><div class="barin" style="width:4%;background:#d9a514"></div></td></tr><tr><td class="nm">Adobe Creative Cloud</td><td class="sz">0.23 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Adobe Creative Cloud Experience</td><td class="sz">0.12 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr><tr><td class="nm">Common</td><td class="sz">0.03 GB</td>
+    <td class="bar"><div class="barin" style="width:0%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑪ Program Files (x86) + ProgramData</h2>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">Microsoft</td><td class="sz">3.24 GB</td>
+    <td class="bar"><div class="barin" style="width:11%;background:#e8733a"></div></td></tr><tr><td class="nm">Foxit Software</td><td class="sz">2.19 GB</td>
+    <td class="bar"><div class="barin" style="width:7%;background:#d9a514"></div></td></tr><tr><td class="nm">Common Files</td><td class="sz">0.90 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">Sangfor</td><td class="sz">0.52 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Google</td><td class="sz">0.52 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">dotnet</td><td class="sz">0.51 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">Reference Assemblies</td><td class="sz">0.44 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">ASUS</td><td class="sz">0.36 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">InstallShield Installation Information</td><td class="sz">0.29 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">NVIDIA Corporation</td><td class="sz">0.27 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">Microsoft</td><td class="sz">5.10 GB</td>
+    <td class="bar"><div class="barin" style="width:17%;background:#e8733a"></div></td></tr><tr><td class="nm">Adobe</td><td class="sz">2.08 GB</td>
+    <td class="bar"><div class="barin" style="width:7%;background:#d9a514"></div></td></tr><tr><td class="nm">Package Cache</td><td class="sz">1.90 GB</td>
+    <td class="bar"><div class="barin" style="width:6%;background:#d9a514"></div></td></tr><tr><td class="nm">Autodesk</td><td class="sz">0.79 GB</td>
+    <td class="bar"><div class="barin" style="width:3%;background:#d9a514"></div></td></tr><tr><td class="nm">NVIDIA Corporation</td><td class="sz">0.74 GB</td>
+    <td class="bar"><div class="barin" style="width:2%;background:#d9a514"></div></td></tr><tr><td class="nm">ASUS</td><td class="sz">0.26 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr><tr><td class="nm">NVIDIA</td><td class="sz">0.22 GB</td>
+    <td class="bar"><div class="barin" style="width:1%;background:#d9a514"></div></td></tr></tbody></table></div>
+
+<div class="sec"><h2>⑫ 全盘最大文件 Top 40（≥300MB）</h2><p class="note">以用户目录为准，Windows 系统文件除外；红色日期=今天仍在写入</p>
+    <table><thead><tr><th>路径</th><th>大小</th><th>占比</th></tr></thead><tbody><tr><td class="nm">OllamaSetup.exe</td><td class="sz">1.46 GB</td>
+    <td class="dt">2026-08-12</td><td class="nm2">~\AppData\Local\Ollama\updates\0x8DEF7A70576ADF2</td></tr><tr><td class="nm">ggml_cuda_v12.dll</td><td class="sz">1.16 GB</td>
+    <td class="dt">2025-01-16</td><td class="nm2">~\AppData\Local\Programs\Ollama\lib\ollama\runners\cuda_v12_avx</td></tr><tr><td class="nm">torch_cuda.dll</td><td class="sz">0.98 GB</td>
+    <td class="dt">2026-07-11</td><td class="nm2">~\miniconda3\envs\pinn_env\Lib\site-packages\torch\lib</td></tr><tr><td class="nm">torch_cuda.dll</td><td class="sz">0.98 GB</td>
+    <td class="dt">2026-07-11</td><td class="nm2">~\miniconda3\envs\pinn_torch\Lib\site-packages\torch\lib</td></tr><tr><td class="nm">ggml_cuda_v11.dll</td><td class="sz">0.92 GB</td>
+    <td class="dt">2025-01-16</td><td class="nm2">~\AppData\Local\Programs\Ollama\lib\ollama\runners\cuda_v11_avx</td></tr><tr><td class="nm">project-archive.zip</td><td class="sz">0.83 GB</td>
+    <td class="dt">2026-07-22</td><td class="nm2">~\Desktop\Projects\Archive</td></tr><tr><td class="nm">VID20260325164858.mp4</td><td class="sz">0.65 GB</td>
+    <td class="dt">2026-03-25</td><td class="nm2">~\Desktop\Courses\大二下\习概</td></tr><tr><td class="nm">dnnl.lib</td><td class="sz">0.65 GB</td>
+    <td class="dt">2026-02-16</td><td class="nm2">~\miniconda3\envs\pinn\Lib\site-packages\torch\lib</td></tr><tr><td class="nm">WorkBuddy-win32-x64-user-5.3.5.34189228-8044e898.exe</td><td class="sz">0.51 GB</td>
+    <td class="dt">2026-07-31</td><td class="nm2">~\Downloads</td></tr><tr><td class="nm">cublasLt64_12.dll</td><td class="sz">0.50 GB</td>
+    <td class="dt">2026-07-11</td><td class="nm2">~\miniconda3\envs\pinn_env\Lib\site-packages\torch\lib</td></tr><tr><td class="nm">cublasLt64_12.dll</td><td class="sz">0.50 GB</td>
+    <td class="dt">2026-07-11</td><td class="nm2">~\miniconda3\envs\pinn_torch\Lib\site-packages\torch\lib</td></tr><tr><td class="nm">cudnn_engines_precompiled64_9.dll</td><td class="sz">0.48 GB</td>
+    <td class="dt">2026-07-11</td><td class="nm2">~\miniconda3\envs\pinn_env\Lib\site-packages\torch\lib</td></tr><tr><td class="nm">cudnn_engines_precompiled64_9.dll</td><td class="sz">0.48 GB</td>
+    <td class="dt">2026-07-11</td><td class="nm2">~\miniconda3\envs\pinn_torch\Lib\site-packages\torch\lib</td></tr><tr><td class="nm">presentation-video.mp4</td><td class="sz">0.44 GB</td>
+    <td class="dt">2025-04-02</td><td class="nm2">~\Downloads</td></tr><tr><td class="nm">sample-video.mp4</td><td class="sz">0.44 GB</td>
+    <td class="dt">2025-05-02</td><td class="nm2">~\Desktop\Archive</td></tr><tr><td class="nm">cublasLt64_12.dll</td><td class="sz">0.44 GB</td>
+    <td class="dt">2025-01-16</td><td class="nm2">~\AppData\Local\Programs\Ollama\lib\ollama</td></tr><tr><td class="nm">experiment-video.mp4</td><td class="sz">0.43 GB</td>
+    <td class="dt">2025-11-18</td><td class="nm2">~\Desktop\Courses\大二上\材料力学实验\金属材料扭转</td></tr><tr><td class="nm">installer.exe</td><td class="sz">0.42 GB</td>
+    <td class="dt">2026-07-17</td><td class="nm2">~\AppData\Local\kimi-desktop-updater</td></tr><tr><td class="nm">Kimi-Setup-3.1.7.exe</td><td class="sz">0.41 GB</td>
+    <td class="dt">2026-08-11</td><td class="nm2">~\AppData\Local\kimi-desktop-updater\pending</td></tr><tr><td class="nm">thumbcache_1280.db</td><td class="sz">0.39 GB</td>
+    <td class="dt">2026-08-13</td><td class="nm2">~\AppData\Local\Microsoft\Windows\Explorer</td></tr><tr><td class="nm">WorkBuddy-Setup-5.3.12.35805101.exe</td><td class="sz">0.39 GB</td>
+    <td class="dt">2026-08-12</td><td class="nm2">~\AppData\Local\Temp\workbuddy-update-x64</td></tr><tr><td class="nm">rocblas.dll</td><td class="sz">0.39 GB</td>
+    <td class="dt">2025-01-16</td><td class="nm2">~\AppData\Local\Programs\Ollama\lib\ollama</td></tr><tr><td class="nm">installer.exe</td><td class="sz">0.39 GB</td>
+    <td class="dt">2026-08-07</td><td class="nm2">~\AppData\Local\@genieworkbuddy-desktop-updater</td></tr><tr><td class="nm">photo-assets.zip</td><td class="sz">0.34 GB</td>
+    <td class="dt">2025-11-28</td><td class="nm2">~\Desktop\Media\夜市明信片照片</td></tr><tr><td class="nm">FoxitPDFEditor_MspPatch_zh_12.1.8.fzip</td><td class="sz">0.32 GB</td>
+    <td class="dt">2025-03-13</td><td class="nm2">~\AppData\Roaming\Foxit Software\Addon\Foxit PDF Editor\Install</td></tr><tr><td class="nm">logs_2.sqlite</td><td class="sz">0.31 GB</td>
+    <td class="dt">2026-08-13</td><td class="nm2">~\.codex</td></tr><tr><td class="nm">chrome.7z</td><td class="sz">0.31 GB</td>
+    <td class="dt">2024-07-30</td><td class="nm2">~\AppData\Roaming\GreenCore7z\15.2.2500.0</td></tr><tr><td class="nm">ggml_rocm.dll</td><td class="sz">0.30 GB</td>
+    <td class="dt">2025-01-16</td><td class="nm2">~\AppData\Local\Programs\Ollama\lib\ollama\runners\rocm_avx</td></tr><tr><td class="nm">C290M21F1A64P_sharedcc_User_G43L00</td><td class="sz">0.29 GB</td>
+    <td class="dt">2026-02-01</td><td class="nm2">~\AppData\Local\javasharedresources</td></tr><tr><td class="nm">GitHubDesktop-3.6.3.nupkg</td><td class="sz">0.29 GB</td>
+    <td class="dt">2026-07-16</td><td class="nm2">~\AppData\Local\GitHubDesktop\packages</td></tr></tbody></table></div>
+
+<div class="sec">
+<h2>🤖 AI Agent 相关占用专项（合计约 10 GB）</h2>
+<table><thead><tr><th>位置</th><th>大小</th><th>说明</th></tr></thead><tbody><tr><td class="nm">.workbuddy（WorkBuddy 本机数据）</td><td class="sz">2.45 GB</td><td class="nm2">workspace\sessions 0.91GB（会话记录）、binaries 0.80GB（内置运行时）、logs 0.16GB（今日日志在增长）</td></tr><tr><td class="nm">.codex</td><td class="sz">1.63 GB</td><td class="nm2">logs_2.sqlite 0.31GB 且今日(08-13)仍在写入；plugins 0.45GB；sessions 0.39GB</td></tr><tr><td class="nm">.cache\codex-runtimes</td><td class="sz">1.30 GB</td><td class="nm2">Codex 运行时缓存</td></tr><tr><td class="nm">.vscode\extensions</td><td class="sz">1.65 GB</td><td class="nm2">VSCode 扩展</td></tr><tr><td class="nm">AppData\Local\Ollama（含更新缓存）</td><td class="sz">6.02 GB</td><td class="nm2">Ollama 程序 4.56GB + 更新安装包 1.46GB；模型实际存放在 ~/.ollama（仅11KB，未下载大模型）</td></tr><tr><td class="nm">.claude / .kimi-work / .kimi-* / .qq-chat-exporter</td><td class="sz">~1.1 GB</td><td class="nm2">其他 AI 工具数据（.qq-chat-exporter 0.9GB）</td></tr></tbody></table>
+<p class="note" style="margin-top:8px">※ 你观察到的"AI agent 无限读写导致 C 盘变大"有一定依据：.codex\logs_2.sqlite 达 0.31GB 且今日持续写入、WorkBuddy sandbox 日志今日已滚动生成约 60MB。
+但整体上 AI 工具相关约 10GB，相对 323GB 用量占比很小。</p>
+</div>
+
+<div class="sec"><h2>🟢 可安全清理（约 12~15 GB）</h2><ul class="alist"><li>回收站 $Recycle.Bin：1.34 GB（清空回收站即可）</li><li>C:\adobeTemp：2.22 GB（Adobe 安装残留的 .tmp，其中 1.98GB 为 ETRA0F4.tmp）</li><li>AppData\Local\Temp 及 workbuddy-update-x64：约 1.2 GB（更新安装包残留）</li><li>Ollama\updates\OllamaSetup.exe：1.46 GB（安装包缓存）</li><li>kimi-desktop-updater / @genieworkbuddy-desktop-updater：约 1.2 GB（更新安装包残留）</li><li>Downloads\CreativecloudX64：1.15 GB（Adobe 安装包）</li><li>miniconda3\pkgs：1.95 GB（conda 包缓存，可用 conda clean -a）</li><li>npm-cache 0.27GB + pip 0.13GB + uv 0.54GB：约 0.94 GB（开发包缓存）</li><li>ms-playwright 0.41GB + ms-playwright-go 0.18GB：约 0.6 GB（浏览器自动化内核）</li><li>Explorer thumbcache_1280.db：0.39 GB（缩略图缓存）</li></ul></div><div class="sec"><h2>🟡 可迁移到 D/E/F 盘（约 30+ GB）</h2><ul class="alist"><li>桌面\Projects\按时间：23.18 GB（个人资料，建议整体搬到 F 盘）</li><li>桌面\Courses：4.37 GB（课程视频等）</li><li>AppData\Local\NetEase\CloudMusic：3.55 GB（网易云音乐缓存，软件内可改路径）</li><li>AppData\Local\MathWorks：2.42 GB（MATLAB 缓存）</li></ul></div><div class="sec"><h2>🟠 需改设置/权衡（约 40+ GB）</h2><ul class="alist"><li>微信 xwechat 3.31GB + WeChat 1.05GB：约 4.4 GB（软件内改存储路径，聊天记录勿删）</li><li>WPS kingsoft wps 3.15GB + wps_international 1.53GB：约 4.7 GB（软件内清缓存）</li><li>SeerLauncher\games：7.27 GB（游戏文件，确认是否还玩）</li><li>miniconda3\envs：13.81 GB（3 个 Python 环境，若不用可删一两个）</li><li>QQ 1.49GB + QQEX 1.32GB + douyin 1.11GB + kimi-desktop 1.05GB：聊天/影音缓存</li></ul></div><div class="sec"><h2>🔴 不建议动（系统/软件本体）</h2><ul class="alist"><li>C:\Windows（61 GB，其中 WinSxS 28.7GB 系统组件库，只能系统自带工具清理）</li><li>pagefile.sys 28.9GB（虚拟内存，可改小但勿删）</li><li>hiberfil.sys 6.1GB（休眠文件，可用 powercfg /h off 关闭休眠释放）</li><li>C:\Program Files\Adobe（25.2 GB，PS/PR/AE/LR 全套软件本体）</li><li>Program Files 其他软件本体（Office、Tencent 等）</li></ul></div>
+
+<div class="footer">生成时间：Demo | disk-cleaner-plus 深度审查（只读模式）| 清理前请先备份重要数据</div>
+</div></body></html>

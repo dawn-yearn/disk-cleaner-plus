@@ -1,0 +1,30 @@
+# Runtime outputs
+scan.json
+analysis.json
+*.log
+*_log.json
+disk-cleaner-report.html
+C盘深度审查报告.html
+
+# Local runtime / scratch
+tmp/
+.temp/
+.cache/
+__pycache__/
+*.py[cod]
+
+# Local IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local credentials / environment
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+.coverage
+.pytest_cache/
