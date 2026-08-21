@@ -1,8 +1,9 @@
 interface:
   display_name: "Disk Cleaner Plus"
-  short_description: "Windows 全盘深度审查与激进磁盘清理"
-  default_prompt: "Use $disk-cleaner-plus to audit Windows disk usage first, then clean only the targets I explicitly authorize."
+  short_description: "Windows 磁盘、垃圾软件与顽固残留深度清洁"
+  default_prompt: "Use $disk-cleaner-plus to audit Windows disk usage and the software ecosystem first, protect work/user data, then clean only the scope I authorize."
 
 policy:
-  # This skill can perform irreversible hard deletion, so require explicit invocation.
+  # v3 can uninstall software and perform irreversible hard deletion.
+  # Require explicit invocation rather than silently triggering.
   allow_implicit_invocation: false
