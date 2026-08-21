@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "vendor": "360/Qihoo",
+  "display_name_patterns": ["360", "360安全", "360浏览器", "360游戏", "360看图", "360壁纸", "360画报", "360软件管家"],
+  "publisher_patterns": ["360安全中心", "Qihoo", "Qihu", "Beijing Qihu Technology", "www.360.cn"],
+  "path_fragments": [
+    "\\360\\", "\\360Safe\\", "\\360Game5\\", "\\360huabao\\",
+    "\\360SoftMgr\\", "\\secoresdk\\360se6\\"
+  ],
+  "known_components": ["360huabao", "sesvc", "360Safetray", "ZhuDongFangYu", "360GameTask"],
+  "policy": "Audit always. Remove only in an authorized cleanup scope; require vendor evidence before deleting services/tasks/files."
+}

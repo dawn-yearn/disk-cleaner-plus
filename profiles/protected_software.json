@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "mode": "review-first",
+  "keywords": [
+    "Autodesk", "AutoCAD", "CAD", "Glodon", "广联达", "GWS", "GCCP",
+    "GrandDog", "GSCServer", "Booway", "博微", "Senseshield", "Virbox",
+    "工程造价", "清标", "定额", "加密锁", "许可证", "License Service",
+    "HP", "TOSHIBA", "Printer", "打印机"
+  ],
+  "rule": "A keyword hit is a protection hint, not proof of legitimacy. Do not auto-delete unless malicious evidence is independently established."
+}

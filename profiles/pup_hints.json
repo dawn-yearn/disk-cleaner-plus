@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "policy": "Review hints only. A match is not malware proof and must not be auto-deleted solely by brand/name.",
+  "application_name_hints": [
+    "2345", "夸克", "Quark", "荐片", "ToolBox", "工具盒", "屏保", "壁纸",
+    "游戏大厅", "软件管家", "下载助手", "桌面助手", "资讯", "推荐", "广告"
+  ],
+  "brand_review_hints": ["Baidu", "百度", "Sogou", "搜狗"],
+  "high_value_signals": [
+    "auto-start advertising component",
+    "multiple auto-start services from AppData",
+    "unsigned executable registered as a service",
+    "service executable under Temp/random directory",
+    "browser default/homepage takeover",
+    "shortcut target/arguments launch promotional URLs"
+  ]
+}

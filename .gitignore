@@ -6,6 +6,15 @@ analysis.json
 disk-cleaner-report.html
 C盘深度审查报告.html
 
+# v3 runtime outputs
+deep-audit*.json
+cleanup-360/
+windows_cleanup_backup/
+windows_deep_cleanup_audit/
+fast-delete-*.jsonl
+stage-delete-*.json
+*delete-pending-*
+
 # Local runtime / scratch
 tmp/
 .temp/
